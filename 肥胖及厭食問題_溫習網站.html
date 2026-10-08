@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飲食失調疾病：肥胖症與厭食症</title>
+    <style>
+        :root {
+            --primary-bg: #1a1a2e;
+            --secondary-bg: #16213e;
+            --card-bg: #2c3e50;
+            --text-color: #e0e0e0;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --correct-color: #2ecc71;
+            --incorrect-color: #e74c3c;
+            --font-family: 'Helvetica Neue', 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        header h1 {
+            color: var(--highlight-color);
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--secondary-bg);
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s, color 0.3s;
+            flex-grow: 1;
+        }
+
+        .tab-button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .tab-button.active {
+            background-color: var(--highlight-color);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--secondary-bg);
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        h2, h3 {
+            color: var(--highlight-color);
+            border-left: 4px solid var(--highlight-color);
+            padding-left: 10px;
+        }
+        
+        ul {
+            list-style-type: '֍ ';
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .flashcard {
+            background-color: transparent;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 10px;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .flashcard-front {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            font-size: 1em;
+        }
+        
+        /* Quiz Styles */
+        .quiz-question {
+            background-color: var(--card-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+        
+        .quiz-question p {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            background-color: var(--secondary-bg);
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .options li:hover {
+            background-color: var(--accent-color);
+        }
+
+        #submit-quiz {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background-color: var(--highlight-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        #quiz-results {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>飲食失調疾病：肥胖症與厭食症</h1>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-button active" onclick="showTab('review')">溫習重點</button>
+            <button class="tab-button" onclick="showTab('flashcards')">溫習咭</button>
+            <button class="tab-button" onclick="showTab('quiz')">闖關挑戰</button>
+        </nav>
+
+        <main>
+            <!-- Review Points Tab -->
+            <div id="review" class="tab-content active">
+                <h2>重點整合</h2>
+                
+                <h3>肥胖症 (Obesity)</h3>
+                <ul>
+                    <li><strong>定義:</strong> 異常或過量脂肪積累，引致健康受損。根據亞洲標準，體重指數(BMI) ≥ 23為超重，≥ 25為肥胖。</li>
+                    <li><strong>三大成因:</strong>
+                        <ul>
+                            <li>從高能量食物及高糖飲品攝取過多能量。</li>
+                            <li>久坐的生活方式，缺乏體能活動。</li>
+                            <li>基因及荷爾蒙失調導致新陳代謝減慢。</li>
+                        </ul>
+                    </li>
+                    <li><strong>健康危害:</strong> 增加患上心臟病、高血壓、糖尿病、膽石、關節炎等嚴重疾病的風險。</li>
+                    <li><strong>治療與管理:</strong>
+                        <ul>
+                            <li>飲食管理：採取均衡多樣化膳食，多吃蔬果及全穀類，減少油膩和過甜食物。</li>
+                            <li>增加運動：消耗體內儲存的脂肪能量。</li>
+                            <li>尋求專業協助：在醫生或營養師監督下進行。</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>厭食症 (Anorexia Nervosa)</h3>
+                <ul>
+                    <li><strong>定義:</strong> 長期食慾不振及拒絕進食，即使極度飢餓仍嚴格排斥熱量，對肥胖有強烈恐懼感。</li>
+                    <li><strong>主要成因:</strong>
+                        <ul>
+                            <li>社會文化：受「白瘦幼」審美觀影響，對自我形象產生錯誤觀念。</li>
+                            <li>心理因素：與情緒打擊、長期受壓、完美主義、低自尊心及不愉快的家庭關係有關。</li>
+                        </ul>
+                    </li>
+                    <li><strong>嚴重後果:</strong>
+                        <ul>
+                            <li>自我強逼的飢餓導致體重過度流失。</li>
+                            <li>可能衍生暴食後催吐或濫用瀉藥的行為。</li>
+                            <li>引致腎臟問題、水腫、肌肉虛弱、心律不整，嚴重時可致猝死。</li>
+                            <li>嘔吐時的胃酸會侵蝕牙齒。</li>
+                        </ul>
+                    </li>
+                     <li><strong>三大治療途徑:</strong>
+                        <ul>
+                            <li>藥物與住院治療：穩定生命跡象，脫離危險期。</li>
+                            <li>營養療法：由營養師設計漸進式飲食計劃，修復消化系統。</li>
+                            <li>心理輔導：重塑正向自我價值，學習健康的壓力應對方式。</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Flashcards Tab -->
+            <div id="flashcards" class="tab-content">
+                <h2>溫習咭 (點擊卡片以翻轉)</h2>
+                <div class="flashcard-container">
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">肥胖症定義</div>
+                            <div class="flashcard-back">異常或過量脂肪積累，以致健康受損（亞洲成人BMI ≥ 25）</div>
+                        </div>
+                    </div>
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">厭食症定義</div>
+                            <div class="flashcard-back">長期食慾不振、自我強逼飢餓、極度恐懼肥胖</div>
+                        </div>
+                    </div>
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">肥胖症成因</div>
+                            <div class="flashcard-back">高能量飲食、久坐不動、新陳代謝或基因問題</div>
+                        </div>
+                    </div>
+                     <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">厭食症成因</div>
+                            <div class="flashcard-back">社會審美壓力、完美主義、低自尊、人際關係問題</div>
+                        </div>
+                    </div>
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">肥胖症併發症</div>
+                            <div class="flashcard-back">高血壓、糖尿病、心臟病、關節炎、膽石</div>
+                        </div>
+                    </div>
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">厭食症嚴重後果</div>
+                            <div class="flashcard-back">肌肉萎縮、腎衰竭、心律不整、牙齒受損、猝死風險</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Tab -->
+            <div id="quiz" class="tab-content">
+                <h2>闖關挑戰 (合格分數: 50)</h2>
+                <form id="quiz-form">
+                    <div class="quiz-question">
+                        <p>1. 根據世界衛生組織為亞洲成年人訂立的標準，體重指數(BMI)達到哪個數值或以上會被界定為「肥胖」？</p>
+                        <ul class="options">
+                            <li data-q="q1" data-a="1">23</li>
+                            <li data-q="q1" data-a="2">25</li>
+                            <li data-q="q1" data-a="3">28</li>
+                            <li data-q="q1" data-a="4">30</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>2. 以下哪一項不是導致肥胖症的主要成因？</p>
+                        <ul class="options">
+                            <li data-q="q2" data-a="1">經常進食高能量及高糖份食物</li>
+                            <li data-q="q2" data-a="2">久坐不動的生活模式</li>
+                            <li data-q="q2" data-a="3">由過敏引起的消化不良</li>
+                            <li data-q="q2" data-a="4">基因及荷爾蒙失調</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>3. 肥胖症會增加患上以下哪種疾病的風險？</p>
+                        <ul class="options">
+                             <li data-q="q3" data-a="1">近視</li>
+                            <li data-q="q3" data-a="2">貧血</li>
+                            <li data-q="q3" data-a="3">糖尿病</li>
+                            <li data-q="q3" data-a="4">皮膚敏感</li>
+                        </ul>
+                    </div>
+                     <div class="quiz-question">
+                        <p>4. 以下哪項是治療肥胖症的有效方法？</p>
+                        <ul class="options">
+                            <li data-q="q4" data-a="1">完全禁食以快速減重</li>
+                            <li data-q="q4" data-a="2">只進食單一種類的減肥食品</li>
+                            <li data-q="q4" data-a="3">增加運動並配合均衡飲食</li>
+                            <li data-q="q4" data-a="4">每天服用大量瀉藥</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>5. 厭食症患者最主要的心理特徵是什麼？</p>
+                        <ul class="options">
+                            <li data-q="q5" data-a="1">對食物失去味覺</li>
+                            <li data-q="q5" data-a="2">對體重增加有強烈的恐懼感</li>
+                            <li data-q="q5" a="3">經常感到肚餓但不想進食</li>
+                            <li data-q="q5" data-a="4">喜歡烹飪但不喜歡品嚐</li>
+                        </ul>
+                    </div>
+                     <div class="quiz-question">
+                        <p>6. 社會上流行的「白瘦幼」審美標準，是導致厭食症的什麼因素？</p>
+                        <ul class="options">
+                            <li data-q="q6" data-a="1">遺傳因素</li>
+                            <li data-q="q6" data-a="2">環境因素</li>
+                            <li data-q="q6" data-a="3">社會壓力因素</li>
+                            <li data-q="q6" data-a="4">生理因素</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>7. 厭食症引致的催吐行為，會因為胃酸倒流而直接損害哪個身體部分？</p>
+                        <ul class="options">
+                            <li data-q="q7" data-a="1">心臟</li>
+                            <li data-q="q7" data-a="2">肝臟</li>
+                            <li data-q="q7" data-a="3">牙齒</li>
+                            <li data-q="q7" data-a="4">膝關節</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>8. 厭食症患者若情況嚴重，可能出現心律不整甚至猝死，這是因為身體長期處於什麼狀態？</p>
+                        <ul class="options">
+                            <li data-q="q8" data-a="1">缺乏運動</li>
+                            <li data-q="q8" data-a="2">精神壓力過大</li>
+                            <li data-q="q8" data-a="3">睡眠不足</li>
+                            <li data-q="q8" data-a="4">嚴重營養不良</li>
+                        </ul>
+                    </div>
+                    <div class="quiz-question">
+                        <p>9. 針對厭食症的「營養療法」，主要由哪位專業人士負責？</p>
+                        <ul class="options">
+                            <li data-q="q9" data-a="1">心理學家</li>
+                            <li data-q="q9" data-a="2">物理治療師</li>
+                            <li data-q="q9" data-a="3">營養師</li>
+                            <li data-q="q9" data-a="4">外科醫生</li>
+                        </ul>
+                    </div>
+                     <div class="quiz-question">
+                        <p>10. 治療厭食症時，處理其背後心理問題（如低自尊、完美主義）屬於哪個治療範疇？</p>
+                        <ul class="options">
+                            <li data-q="q10" data-a="1">藥物治療</li>
+                            <li data-q10" data-a="2">心理輔導</li>
+                            <li data-q="q10" data-a="3">營養療法</li>
+                            <li data-q="q10" data-a="4">住院監護</li>
+                        </ul>
+                    </div>
+                    <button type="button" id="submit-quiz">提交答案</button>
+                    <div id="quiz-results"></div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        const correctAnswers = {
+            q1: '2', q2: '3', q3: '3', q4: '3', q5: '2',
+            q6: '3', q7: '3', q8: '4', q9: '3', q10: '2'
+        };
+        const userAnswers = {};
+
+        document.querySelectorAll('.options li').forEach(option => {
+            option.addEventListener('click', () => {
+                const question = option.getAttribute('data-q');
+                userAnswers[question] = option.getAttribute('data-a');
+                
+                document.querySelectorAll(`li[data-q="${question}"]`).forEach(o => {
+                    o.style.backgroundColor = 'var(--secondary-bg)';
+                    o.style.fontWeight = 'normal';
+                });
+                
+                option.style.backgroundColor = 'var(--accent-color)';
+                option.style.fontWeight = 'bold';
+            });
+        });
+
+        document.getElementById('submit-quiz').addEventListener('click', () => {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+
+            for (const question in correctAnswers) {
+                if (userAnswers[question] === correctAnswers[question]) {
+                    score += 1;
+                }
+            }
+
+            const finalScore = Math.round((score / totalQuestions) * 100);
+            const resultsDiv = document.getElementById('quiz-results');
+            
+            let message = `你的分數是：${finalScore}分。<br>`;
+            if (finalScore >= 50) {
+                message += "恭喜你！挑戰成功！";
+                resultsDiv.style.backgroundColor = 'var(--correct-color)';
+            } else {
+                message += "分數未達50分，再接再厲！";
+                resultsDiv.style.backgroundColor = 'var(--incorrect-color)';
+            }
+            resultsDiv.innerHTML = message;
+        });
+    </script>
+
+</body>
+</html>
